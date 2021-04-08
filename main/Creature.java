@@ -1,20 +1,23 @@
-package genalg;
 
-public abstract class Creature<T> {
+
+public abstract class Creature<T, E> {
 
     private final DNA dna;
+    private final E objective;
 
-    public Creature(DNA dna) {
+    public Creature(DNA dna, E objective) {
+
         this.dna = dna;
+        this.objective = objective;
     }
 
     public abstract float getFitness();
     public abstract T getPhenotype();
-    public abstract Creature<T> create(DNA dna);
+    public abstract Creature<T, E> create(DNA dna, E objective);
 
-    public Creature<T> mate(Creature<T> creature){
+    public Creature<T, E> mate(Creature<T, E> creature){
         var childDNA = dna.crossover(creature.dna);
-        return create(childDNA);
+        return create(childDNA, creature.objective);
     }
 
     public void mutate(float rate){
@@ -23,6 +26,14 @@ public abstract class Creature<T> {
 
     public DNA getDNA() {
         return dna;
+    }
+
+    public E getObjective(){
+        return objective;
+    }
+
+    public float[] getGenome(){
+        return dna.getGenome();
     }
 
 }

@@ -1,10 +1,10 @@
-package genalg;
+
 
 public class DNA {
 
     private final float[] genome;
 
-    public DNA(int genomeSize){
+    public DNA(int genomeSize) {
         genome = new float[genomeSize];
 
         for (int i = 0; i < genomeSize; i++) {
@@ -14,12 +14,12 @@ public class DNA {
     }
 
 
-    public DNA(float[] genome){
+    public DNA(float[] genome) {
         this.genome = genome;
     }
 
 
-    public DNA crossover (DNA other){
+    public DNA crossover(DNA other) {
 
         int midPoint = (int) (Math.random() * genome.length);
         float[] newGenome = new float[genome.length];
@@ -31,7 +31,7 @@ public class DNA {
         return new DNA(newGenome);
     }
 
-    public void mutate(float rate){
+    public void mutate(float rate) {
 
         for (int i = 0; i < genome.length; i++) {
             if (Math.random() < rate) genome[i] = (float) Math.random();

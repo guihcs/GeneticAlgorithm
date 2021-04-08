@@ -1,24 +1,24 @@
-package genalg;
+
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class Population<T> {
+public class Population<T, E> {
 
     private final float mutationRate;
     private final float populationSize;
-    private List<Creature<T>> creatureList;
+    private List<Creature<T, E>> creatureList;
     private int currentGeneration = 0;
 
 
-    public Population(float mutationRate, float populationSize, CreatureGenerator<T> creatureGenerator) {
+    public Population(float mutationRate, float populationSize, CreatureGenerator<T, E> creatureGenerator, E objective) {
         this.mutationRate = mutationRate;
         this.populationSize = populationSize;
         creatureList = new ArrayList<>();
 
         for (int i = 0; i < populationSize; i++) {
-            creatureList.add(creatureGenerator.generate());
+            creatureList.add(creatureGenerator.generate(objective));
         }
     }
 
@@ -28,7 +28,7 @@ public class Population<T> {
     }
 
 
-    public Creature<T> simulate(int iterations){
+    public Creature<T, E> simulate(int iterations){
         for (int i = 0; i < iterations; i++) {
             iterate();
         }
@@ -39,15 +39,15 @@ public class Population<T> {
 
     public void iterate() {
 
-        List<Creature<T>> nextGeneration = new ArrayList<>();
+        List<Creature<T, E>> nextGeneration = new ArrayList<>();
 
         sortByFitness();
 
         for (int i = 0; i < populationSize; i++) {
-            Creature<T> parent1 = selectRandomByFitness();
-            Creature<T> parent2 = selectRandomByFitness(parent1);
+            Creature<T, E> parent1 = selectRandomByFitness();
+            Creature<T, E> parent2 = selectRandomByFitness(parent1);
 
-            Creature<T> child = parent1.mate(parent2);
+            Creature<T, E> child = parent1.mate(parent2);
             child.mutate(mutationRate);
             nextGeneration.add(child);
         }
@@ -57,7 +57,7 @@ public class Population<T> {
     }
 
 
-    private Creature<T> selectRandomByFitness(){
+    private Creature<T, E> selectRandomByFitness(){
 
         float totalSum = populationSize * (populationSize + 1) / 2f;
 
@@ -72,9 +72,9 @@ public class Population<T> {
     }
 
 
-    private Creature<T> selectRandomByFitness(Creature<T> creatureToCompare){
+    private Creature<T, E> selectRandomByFitness(Creature<T, E> creatureToCompare){
 
-        Creature<T> creature;
+        Creature<T, E> creature;
 
         do {
             creature = selectRandomByFitness();
@@ -84,7 +84,7 @@ public class Population<T> {
     }
 
 
-    public Creature<T> getFittest(){
+    public Creature<T, E> getFittest(){
         var fittest = creatureList.stream()
                 .max(Comparator.comparing(Creature::getFitness));
 
@@ -101,5 +101,9 @@ public class Population<T> {
 
     public float getPopulationSize() {
         return populationSize;
+    }
+
+    public List<Creature<T, E>> getCreatureList() {
+        return creatureList;
     }
 }
